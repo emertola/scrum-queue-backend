@@ -3,9 +3,9 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import passport from 'passport';
 import routes from './routes';
-import './strategies/local-strategy';
 import connectDB from './config/db.config';
 import config from './config/environment.config';
+import './config/passport.config';
 
 const app = express();
 const PORT = config.PORT;

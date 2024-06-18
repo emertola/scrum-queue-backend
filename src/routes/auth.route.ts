@@ -1,18 +1,30 @@
-import { Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import passport from 'passport';
 
 const router = Router();
 
-router.post(
-	'/auth/login',
-	passport.authenticate('local'),
-	(req: Request, res: Response) => {
-		res.sendStatus(200);
-	}
+router.get(
+  '/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
 );
 
-router.get('/auth/status', (req: Request, res: Response) => {
-	return req?.user ? res.send(req.user) : res.sendStatus(401);
+router.get(
+  '/google/redirect',
+  passport.authenticate('google'),
+  (request: Request, response: Response) => {
+    console.log('request', request.user);
+    // console.log('response', response);
+    response.status(200).send('Login Success');
+  }
+);
+
+router.get('/logout', (req: Request, res: Response, next: NextFunction) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('/');
+  });
 });
 
 export default router;
