@@ -4,14 +4,23 @@ import session from 'express-session';
 import passport from 'passport';
 import routes from './routes';
 import './strategies/local-strategy';
+import connectDB from './config/db.config';
+import config from './config/environment.config';
 
 const app = express();
-const PORT = 3001;
+const PORT = config.PORT;
+
+// initiate db connection
+connectDB();
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(
-  session({ secret: 'session123', resave: false, saveUninitialized: false })
+  session({
+    secret: config.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
 );
 app.use(passport.initialize());
 app.use(passport.session());
