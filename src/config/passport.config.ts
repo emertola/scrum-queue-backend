@@ -3,17 +3,12 @@ import User from '../schemas/user.schema';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import config from './environment.config';
 
-passport.serializeUser((user: any, done) => {
-  done(null, user.id);
+passport.serializeUser((user: Express.User, done) => {
+  done(null, user);
 });
 
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await User.findById(id);
-    done(null, user);
-  } catch (err) {
-    done(err);
-  }
+passport.deserializeUser(async (user: Express.User, done) => {
+  done(null, user);
 });
 
 passport.use(
@@ -36,7 +31,14 @@ passport.use(
           await user.save();
         }
 
-        done(null, user);
+        let token: Express.User = {
+          accessToken,
+          refreshToken,
+          profile,
+          role: user.role,
+        };
+
+        done(null, token);
       } catch (err) {
         done(err);
       }
